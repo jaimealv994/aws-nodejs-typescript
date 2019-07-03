@@ -1,12 +1,23 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
+import {ApolloServer, gql} from 'apollo-server-lambda';
 
-export const hello: APIGatewayProxyHandler = async (event, _context) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Go Serverless Webpack (Typescript) v1.0! Your function executed successfully!',
-      input: event,
-    }, null, 2),
-  };
-}
+const typeDefs = gql`
+    type Query{
+        hello: String
+    }
+`;
+
+const resolvers = {
+    query: {
+        hello() {
+            return 'Hello World!'
+        }
+    }
+};
+
+const server = new ApolloServer({
+    typeDefs,
+    resolvers
+});
+
+export const graphqlHandler = server.createHandler();
